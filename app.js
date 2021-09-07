@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken")
 const connection = require("./database/database")
 
 const UsersController = require("./users/UsersController")
+const SedesController = require("./sedes/SedesController")
 
 app.use(cors())
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true}))
 
 
 app.use("/", UsersController)
+app.use("/", SedesController)
 
 //Database
 connection
@@ -24,30 +26,7 @@ connection
         console.log(error)
     })
 
-    var DB = {
 
-        games: [
-            {
-                id: 200,
-                title: "COD",
-                year: 2020,
-                price: 60
-            }, 
-            {
-                id: 201,
-                title: "God",
-                year: 2021,
-                price: 60
-            }, 
-            {
-                id: 202,
-                title: "GTA",
-                year: 2012,
-                price: 50
-            },
-        ]
-    }
-    
 
 app.listen(5000,()=>{
     console.log("Iniciado com sucesso")
