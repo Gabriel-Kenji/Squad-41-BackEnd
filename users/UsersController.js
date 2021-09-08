@@ -215,4 +215,6 @@ router.post("/auth", (req, res) => {
   }
 });
 
+
+console.log("user")
 module.exports = router;

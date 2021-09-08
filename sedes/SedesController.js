@@ -10,5 +10,5 @@ router.get('/sedes', (req,res)=>{
       });
 })
 
-
+console.log("sede")
 module.exports = router;
