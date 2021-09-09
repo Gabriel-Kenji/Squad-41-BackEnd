@@ -10,5 +10,15 @@ router.get('/sedes', (req,res)=>{
       });
 })
 
+router.get('/sedess', (req,res)=>{
+  Sede.findOne({
+    where: {
+      name: 'teste',
+    }}).then((sedes) => {
+      res.status(200);
+      res.json(sedes);
+    });
+})
+
 console.log("sede")
 module.exports = router;
