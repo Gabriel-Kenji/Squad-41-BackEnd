@@ -13,14 +13,17 @@ router.get("/agendamentos", (req, res) => {
 });
 
 //get data
-router.get("/agendamentos/:date",(req,res)=>{
-    Agendamento.findAll({ include: [{ model: User }], where:{
-        date: req.params.date,
-      }, }).then((agendamentos) => {
-        res.status(200);
-        res.json(agendamentos);
-      });
-})
+router.get("/agendamentos/:date", (req, res) => {
+  Agendamento.findAll({
+    include: [{ model: User }],
+    where: {
+      date: req.params.date,
+    },
+  }).then((agendamentos) => {
+    res.status(200);
+    res.json(agendamentos);
+  });
+});
 
 router.post("/agendamentos", (req, res) => {
   var id = req.body.id;
@@ -64,23 +67,23 @@ router.post("/agendamentos", (req, res) => {
                   date: date,
                 })
                   .then(() => {
-                    res.sendStatus(200);
+                    res.status(200);
+                    res.json({ ok: "Agendamento realizado com sucesso" });
                   })
                   .catch((err) => {
                     res.sendStatus(500);
                   });
               } else {
                 res.status(406);
-                res.json({ err: "já cadastrado" });
+                res.json({ err: "Já existe um agendamento" });
               }
             })
             .catch((err) => {
-                res.sendStatus(500);
-                
-            }); 
+              res.sendStatus(500);
+            });
         } else {
           res.status(406);
-          res.json({ err: "E-mail já cadastrado" });
+          res.json({ err: "Usuario não existe" });
         }
       })
       .catch((err) => {
@@ -90,7 +93,7 @@ router.post("/agendamentos", (req, res) => {
 });
 
 //delete
-router.delete("/users/:id", (req, res) => {
+router.delete("/agendamento/:id", (req, res) => {
   var id = req.params.id;
   if (id != undefined) {
     if (!isNaN(id)) {
@@ -100,7 +103,7 @@ router.delete("/users/:id", (req, res) => {
         },
       }).then((user) => {
         if (user) {
-          User.destroy({
+          Agendamento.destroy({
             where: {
               id: id,
             },
@@ -109,7 +112,7 @@ router.delete("/users/:id", (req, res) => {
           });
         } else {
           res.status(400);
-          res.json({ err: "Usuario não existe" });
+          res.json({ err: "Agendamento não existe" });
         }
       });
     } else {
@@ -122,5 +125,6 @@ router.delete("/users/:id", (req, res) => {
   }
 });
 
-console.log("Agendamento");
+
+
 module.exports = router;

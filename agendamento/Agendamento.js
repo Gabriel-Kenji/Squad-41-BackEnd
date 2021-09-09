@@ -8,8 +8,8 @@ const Agendamento = connection.define('agendamento', {
         allowNull: false
     }
 })
-User.hasMany(Agendamento) //Uma Categoria pode ter varios artigos
-Agendamento.belongsTo(User)//Um artigo pertence a uma categoria
+User.hasMany(Agendamento) //Uma User pode ter varios Agendamento
+Agendamento.belongsTo(User)//Um Agendamento pertence a uma User
 
 
 Agendamento.sync({force: false})

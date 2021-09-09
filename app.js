@@ -8,6 +8,7 @@ const connection = require("./database/database")
 const UsersController = require("./users/UsersController")
 const SedesController = require("./sedes/SedesController")
 const AgendamentoController = require("./agendamento/AgendamentosController")
+const EstacaoesController = require("./estacao/EstacoesController")
 
 app.use(cors())
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true}))
 app.use("/", UsersController)
 app.use("/", SedesController)
 app.use("/", AgendamentoController)
+app.use("/", EstacaoesController)
 
 //Database
 connection
