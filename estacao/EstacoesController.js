@@ -11,6 +11,18 @@ router.get("/estacoes", (req, res) => {
   });
 });
 
+
+router.get("/estacoes/:sede", (req, res) => {
+  Estacao.findAll({
+    where: {
+      sedeId: req.params.sede
+    }}
+  ).then((estacao) => {
+    res.status(200);
+    res.json(estacao);
+  });
+});
+
 router.post("/estacoes", (req, res) => {
   var num = req.body.num;
   var sede = parseInt(req.body.sede);
