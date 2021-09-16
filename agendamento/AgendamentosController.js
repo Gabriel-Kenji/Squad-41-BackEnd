@@ -5,7 +5,9 @@ const User = require("../users/User");
 const Estacao = require("../estacao/Estacao");
 const { Op, where } = require("sequelize");
 const Sede = require("../sedes/Sede");
-const auth = require("../middleware/Auth")
+const auth = require("../middleware/Auth");
+const e = require("cors");
+const nodemailer = require("nodemailer")
 
 //get
 router.get("/agendamentos",auth, (req, res) => {
@@ -78,7 +80,8 @@ router.get("/agendamentos/:date/:sede",auth, (req, res) => {
                   res.status(200);
                   res.json({ agendamento, estaco, quant });
                 }).catch(error =>{
-                  res.Sendstatus(500);
+                  res.status(500);
+                  res.json(error)
                 })
                 
               });
@@ -86,8 +89,7 @@ router.get("/agendamentos/:date/:sede",auth, (req, res) => {
       });
     })
     .catch((err) => {
-        res.status(500);
-        res.send("aa")
+        res.sendStatus(500);
     });
 });
 
@@ -178,12 +180,70 @@ router.post("/agendamentos",auth, (req, res) => {
                           saida: saida
                         })
                           .then(() => {
-                            res.status(200);
-                            res.json({ ok: "Agendamento realizado com sucesso" });
+
+                            User.findOne({where:{
+                              id: id
+                            }}).then(usuario=>{
+                              Estacao.findOne({where:{
+                                id: estacoes
+                              }}).then(es=>{
+
+                                const transporter = nodemailer.createTransport({
+                                  service: 'Gmail',
+                                  secure: true,
+                                  auth:{user: "testesquad41@gmail.com",
+                                   pass: "teste123@"},
+                                   tls: {
+                                      rejectUnauthorized: false
+                                  }
+                                })
+                                sedee= ""
+
+                                if(es.sedeId == 1){
+                                  sedee = "São Paulo"
+                                }else if(es.sedeId == 2){
+                                  sedee = "Santos"
+                                }
+                                arruma_data= []
+                                arruma_data = date.split("-");
+                          
+                                const mailOptions = {
+                                  from: "testesquad41@gmail.com", // sender address
+                                  to: usuario.email , // receiver (use array of string for a list)
+
+                                
+                                  subject: 'Agendamento FCalendar ', // Subject line
+                                  html: `Olá  ${usuario.name}, seu agendamento foi realizado com sucesso!!!<br>Segue abaixo os dados do seu agendamento:<br><br><br>Escritório: ${sedee}<br>Data: ${arruma_data[2]}/${arruma_data[1]}/${arruma_data[0]}<br>Estação de trabalho: 1<br>Horário: ${entrada} - ${saida}`,// plain text body
+                              
+                                };
+                          
+                                transporter.sendMail(mailOptions, (err, info) => {
+                                  if(err)
+                                    res.sendStatus(5000);
+                                  else
+                                  res.status(200);
+                                  res.json({ ok: "Agendamento realizado com sucesso" });
+                               });
+
+
+
+                              }).catch(err=>{
+                                res.sendStatus(5001);
+                              })
+
+                              
+                            }).catch(err =>{
+                              res.sendStatus(5002);
+                            })
+
+                            
+
+
+
+                            
                           })
                           .catch((err) => {
-                            res.status(500);
-                            res.json({ err: "ccccc" });
+                            res.Sendstatus(5003);
                           });
                       
                 }
@@ -205,8 +265,7 @@ router.post("/agendamentos",auth, (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500);
-        res.json({ err: "bbbb" }); 
+        res.Sendstatus(500);
       });
 
 
