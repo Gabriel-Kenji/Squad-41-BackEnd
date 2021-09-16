@@ -15,6 +15,23 @@ router.get("/agendamentos",auth, (req, res) => {
   });
 });
 
+
+// get user agendamentos
+router.get("/agendamentos/:id",auth, (req, res) => {
+  Agendamento.findAll({
+    include: [{ model: Estacao }],
+    where: {
+      userId: req.params.id,
+    },
+    order: [['id', 'DESC']],
+  }).then((resp) =>{
+    res.json(resp)
+  }).catch((err) =>{
+    res.json(err)
+  })
+})
+
+
 //get data
 router.get("/agendamentos/:date/:sede",auth, (req, res) => {
   Estacao.findAll({
@@ -219,12 +236,12 @@ router.delete("/agendamento/:id",auth, (req, res) => {
   var id = req.params.id;
   if (id != undefined) {
     if (!isNaN(id)) {
-      User.findOne({
+      Agendamento.findOne({
         where: {
           id: id,
         },
-      }).then((user) => {
-        if (user) {
+      }).then((agen) => {
+        if (agen) {
           Agendamento.destroy({
             where: {
               id: id,
