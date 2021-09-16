@@ -1,16 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const Sede = require("./Sede")
+const auth = require("../middleware/Auth")
 
 
-router.get('/sedes', (req,res)=>{
+router.get('/sedes',auth, (req,res)=>{
     Sede.findAll().then((sedes) => {
         res.status(200);
         res.json(sedes);
       });
 })
 
-router.get('/sedess', (req,res)=>{
+router.get('/sedess',auth, (req,res)=>{
   Sede.findOne({
     where: {
       name: 'teste',

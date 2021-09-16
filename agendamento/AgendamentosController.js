@@ -5,9 +5,10 @@ const User = require("../users/User");
 const Estacao = require("../estacao/Estacao");
 const { Op, where } = require("sequelize");
 const Sede = require("../sedes/Sede");
+const auth = require("../middleware/Auth")
 
 //get
-router.get("/agendamentos", (req, res) => {
+router.get("/agendamentos",auth, (req, res) => {
   Agendamento.findAll({ include: [{ model: User }] }).then((agendamentos) => {
     res.status(200);
     res.json(agendamentos);
@@ -15,7 +16,7 @@ router.get("/agendamentos", (req, res) => {
 });
 
 //get data
-router.get("/agendamentos/:date/:sede", (req, res) => {
+router.get("/agendamentos/:date/:sede",auth, (req, res) => {
   Estacao.findAll({
     where: {
       sedeId: req.params.sede,
@@ -73,7 +74,7 @@ router.get("/agendamentos/:date/:sede", (req, res) => {
     });
 });
 
-router.post("/agendamentos", (req, res) => {
+router.post("/agendamentos",auth, (req, res) => {
   var id = req.body.id;
   var date = req.body.date;
   var estacoes = req.body.estacaoId;
@@ -214,7 +215,7 @@ router.post("/agendamentos", (req, res) => {
 });
 
 //delete
-router.delete("/agendamento/:id", (req, res) => {
+router.delete("/agendamento/:id",auth, (req, res) => {
   var id = req.params.id;
   if (id != undefined) {
     if (!isNaN(id)) {

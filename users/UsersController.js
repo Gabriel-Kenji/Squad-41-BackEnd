@@ -3,11 +3,12 @@ const router = express.Router();
 const User = require("./User");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
+const auth = require("../middleware/Auth")
 const jwt = require("jsonwebtoken");
 const JWTSecret = "ndsuhiudnfijuwsnfoukhwepijewpjrilçwjngfojweoh";
 
 //get
-router.get("/users", (req, res) => {
+router.get("/users",auth, (req, res) => {
   User.findAll().then((users) => {
     res.status(200);
     res.json(users);
@@ -15,7 +16,7 @@ router.get("/users", (req, res) => {
 });
 
 //get one
-router.get("/users/:id", (req, res) => {
+router.get("/users/:id",auth, (req, res) => {
   var id = req.params.id;
   User.findOne({
     where: {
@@ -89,7 +90,7 @@ router.post("/users", (req, res) => {
 });
 
 //delete
-router.delete("/users/:id", (req, res) => {
+router.delete("/users/:id",auth, (req, res) => {
   var id = req.params.id;
   if (id != undefined) {
     if (!isNaN(id)) {
@@ -123,7 +124,7 @@ router.delete("/users/:id", (req, res) => {
 
 //edit
 
-router.put("/users/:id", (req, res) => {
+router.put("/users/:id",auth, (req, res) => {
   if (isNaN(req.params.id)) {
     res.sendStatus(406);
   } else {
