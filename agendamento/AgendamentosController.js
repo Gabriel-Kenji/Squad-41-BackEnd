@@ -3,7 +3,8 @@ const router = express.Router();
 const Agendamento = require("./Agendamento");
 const User = require("../users/User");
 const Estacao = require("../estacao/Estacao");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
+const Sede = require("../sedes/Sede");
 
 //get
 router.get("/agendamentos", (req, res) => {
@@ -51,15 +52,24 @@ router.get("/agendamentos/:date/:sede", (req, res) => {
                   date: req.params.date,
                 },
               }).then((agendamento) => {
-                res.status(200);
-                res.json({ agendamento, estaco });
+                Estacao.count({
+                  where:{
+                    sedeId: req.params.sede
+                  }
+                }).then(quant =>{
+                  res.status(200);
+                  res.json({ agendamento, estaco, quant });
+                }).catch(error =>{
+                  res.Sendstatus(500);
+                })
+                
               });
         });
       });
     })
     .catch((err) => {
-      res.status(500);
-      res.send("sss");
+        res.status(500);
+        res.send("aa")
     });
 });
 
@@ -67,6 +77,8 @@ router.post("/agendamentos", (req, res) => {
   var id = req.body.id;
   var date = req.body.date;
   var estacoes = req.body.estacaoId;
+  var entrada = req.body.entrada;
+  var saida = req.body.saida;
   var nul = false;
 
   if (estacoes == undefined) {
@@ -87,9 +99,23 @@ router.post("/agendamentos", (req, res) => {
   if (date.length === 0) {
     nul = true;
   }
+  if (saida == undefined) {
+    nul = true;
+  }
+  if (saida.length === 0) {
+    nul = true;
+  }
+  if (entrada == undefined) {
+    nul = true;
+  }
+  if (entrada.length === 0) {
+    nul = true;
+  }
+
+
   if (nul) {
     res.status(400);
-    res.json({ err: "usuario invalido" });
+    res.json({ err: "Dados invalidos" });
   } else {
     User.findOne({
       where: {
@@ -98,6 +124,21 @@ router.post("/agendamentos", (req, res) => {
     })
       .then((user) => {
         if (user != undefined) {
+
+          Agendamento.findOne({
+            where: {
+              [Op.and]: [{ userId: id }, { date: date }],
+            },
+          })
+            .then((agendamento) => {
+              if (agendamento == undefined) {
+
+
+
+
+
+
+
           Estacao.findOne({
             where: {
               id: estacoes,
@@ -110,17 +151,13 @@ router.post("/agendamentos", (req, res) => {
                 }
               }).then(existe =>{
                 if(existe == undefined){
-                  Agendamento.findOne({
-                    where: {
-                      [Op.and]: [{ userId: id }, { date: date }],
-                    },
-                  })
-                    .then((agendamento) => {
-                      if (agendamento == undefined) {
+                  
                         Agendamento.create({
                           userId: id,
                           date: date,
                           estacaoId: estacoes,
+                          entrada: entrada,
+                          saida: saida
                         })
                           .then(() => {
                             res.status(200);
@@ -130,19 +167,11 @@ router.post("/agendamentos", (req, res) => {
                             res.status(500);
                             res.json({ err: "ccccc" });
                           });
-                      } else {
-                        res.status(406);
-                        res.json({ err: "Já existe um agendamento" });
-                      }
-                    })
-                    .catch((err) => {
-                      res.status(500);
-                      res.json({ err: "bbbb" });
-                    });
+                      
                 }
                 else{
-                  res.status(406);
-                  res.json({ err: "Já existe um agendamento" });
+                  res.status(401);
+                  res.json({ err: "Estação já agendada" });
                 }
               })
               
@@ -151,6 +180,27 @@ router.post("/agendamentos", (req, res) => {
               res.json({ err: "Estação não existe" });
             }
           });
+
+        } else {
+          res.status(403);
+          res.json({ err: "Usuario já agendado nesse" });
+        }
+      })
+      .catch((err) => {
+        res.status(500);
+        res.json({ err: "bbbb" }); 
+      });
+
+
+
+
+
+
+
+
+
+
+
         } else {
           res.status(406);
           res.json({ err: "Usuario não existe" });

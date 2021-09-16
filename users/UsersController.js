@@ -31,10 +31,15 @@ router.get("/users/:id", (req, res) => {
 router.post("/users", (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
-  var admin = req.body.admin;
+  var name = req.body.name
 
   var nul = false;
-
+  if (name == undefined) {
+    nul = true;
+  }
+  if (name.length === 0) {
+    nul = true;
+  }
   if (email == undefined) {
     nul = true;
   }
@@ -62,9 +67,9 @@ router.post("/users", (req, res) => {
           var salt = bcrypt.genSaltSync(10);
           var hash = bcrypt.hashSync(password, salt);
           User.create({
+            name: name,
             email: email,
-            password: hash,
-            admin: admin,
+            password: hash
           })
             .then(() => {
               res.sendStatus(200);
@@ -166,7 +171,7 @@ router.put("/users/:id", (req, res) => {
   }
 });
 
-router.post("/auth", (req, res) => {
+router.post("/login", (req, res) => {
   var { email, password } = req.body;
 
   if (email != undefined) {
@@ -192,7 +197,7 @@ router.post("/auth", (req, res) => {
                   res.json({ err: "Falha interna" });
                 } else {
                   res.status(200);
-                  res.json({ token: token });
+                  res.json({ token: token, id: user.id });
                 }
               }
             );
@@ -214,6 +219,26 @@ router.post("/auth", (req, res) => {
     res.json({ err: "O E-mail enviado é inválido" });
   }
 });
+
+router.post("/auth",(req,res)=>{
+  token = req.body.token
+  if(token!=undefined){
+
+    jwt.verify(token,JWTSecret,(err,data)=>{
+        if(err){
+            res.status(401)
+            res.json({err:"Token inválido"})
+        }else{
+            req.token = token
+            req.loggedUser = {id: data.id , email: data.email}
+            res.sendStatus(200)
+        }
+    })
+  }else{
+      res.status(401)
+      res.json({err:"Token inválido"})
+  }
+})
 
 
 console.log("user")

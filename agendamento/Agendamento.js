@@ -7,6 +7,14 @@ const Agendamento = connection.define('agendamento', {
     date:{
         type: Sequelize.DATEONLY,
         allowNull: false
+    },
+    entrada:{
+        type: Sequelize.TEXT,
+        allowNull: false
+    },
+    saida:{
+        type: Sequelize.TEXT,
+        allowNull: false
     }
 })
 User.hasMany(Agendamento) //Uma User pode ter varios Agendamento
@@ -15,6 +23,7 @@ Estacao.hasMany(Agendamento) //Uma Estacao pode ter varios Agendamento
 Agendamento.belongsTo(Estacao)//Um Agendamento pertence a uma Estacao   
 
 
+
 Agendamento.sync({force: false})
 
-module.exports = Agendamento 
+module.exports = Agendamento     
