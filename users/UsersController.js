@@ -3,11 +3,12 @@ const router = express.Router();
 const User = require("./User");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
+const auth = require("../middleware/Auth")
 const jwt = require("jsonwebtoken");
 const JWTSecret = "ndsuhiudnfijuwsnfoukhwepijewpjrilçwjngfojweoh";
 
 //get
-router.get("/users", (req, res) => {
+router.get("/users",auth, (req, res) => {
   User.findAll().then((users) => {
     res.status(200);
     res.json(users);
@@ -15,7 +16,7 @@ router.get("/users", (req, res) => {
 });
 
 //get one
-router.get("/users/:id", (req, res) => {
+router.get("/users/:id",auth, (req, res) => {
   var id = req.params.id;
   User.findOne({
     where: {
@@ -31,10 +32,15 @@ router.get("/users/:id", (req, res) => {
 router.post("/users", (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
-  var admin = req.body.admin;
+  var name = req.body.name
 
   var nul = false;
-
+  if (name == undefined) {
+    nul = true;
+  }
+  if (name.length === 0) {
+    nul = true;
+  }
   if (email == undefined) {
     nul = true;
   }
@@ -62,9 +68,9 @@ router.post("/users", (req, res) => {
           var salt = bcrypt.genSaltSync(10);
           var hash = bcrypt.hashSync(password, salt);
           User.create({
+            name: name,
             email: email,
-            password: hash,
-            admin: admin,
+            password: hash
           })
             .then(() => {
               res.sendStatus(200);
@@ -84,7 +90,7 @@ router.post("/users", (req, res) => {
 });
 
 //delete
-router.delete("/users/:id", (req, res) => {
+router.delete("/users/:id",auth, (req, res) => {
   var id = req.params.id;
   if (id != undefined) {
     if (!isNaN(id)) {
@@ -118,7 +124,7 @@ router.delete("/users/:id", (req, res) => {
 
 //edit
 
-router.put("/users/:id", (req, res) => {
+router.put("/users/:id",auth, (req, res) => {
   if (isNaN(req.params.id)) {
     res.sendStatus(406);
   } else {
@@ -166,7 +172,7 @@ router.put("/users/:id", (req, res) => {
   }
 });
 
-router.post("/auth", (req, res) => {
+router.post("/login", (req, res) => {
   var { email, password } = req.body;
 
   if (email != undefined) {
@@ -192,7 +198,7 @@ router.post("/auth", (req, res) => {
                   res.json({ err: "Falha interna" });
                 } else {
                   res.status(200);
-                  res.json({ token: token });
+                  res.json({ token: token, id: user.id });
                 }
               }
             );
@@ -214,6 +220,26 @@ router.post("/auth", (req, res) => {
     res.json({ err: "O E-mail enviado é inválido" });
   }
 });
+
+router.post("/auth",(req,res)=>{
+  token = req.body.token
+  if(token!=undefined){
+
+    jwt.verify(token,JWTSecret,(err,data)=>{
+        if(err){
+            res.status(401)
+            res.json({err:"Token inválido"})
+        }else{
+            req.token = token
+            req.loggedUser = {id: data.id , email: data.email}
+            res.sendStatus(200)
+        }
+    })
+  }else{
+      res.status(401)
+      res.json({err:"Token inválido"})
+  }
+})
 
 
 console.log("user")

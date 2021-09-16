@@ -3,15 +3,28 @@ const router = express.Router();
 const Estacao = require("./Estacao");
 const Sede = require("../sedes/Sede");
 const { Op } = require("sequelize");
+const auth = require("../middleware/Auth")
 
-router.get("/estacoes", (req, res) => {
+router.get("/estacoes",auth, (req, res) => {
   Estacao.findAll().then((estacao) => {
     res.status(200);
     res.json(estacao);
   });
 });
 
-router.post("/estacoes", (req, res) => {
+
+router.get("/estacoes/:sede",auth, (req, res) => {
+  Estacao.findAll({
+    where: {
+      sedeId: req.params.sede
+    }}
+  ).then((estacao) => {
+    res.status(200);
+    res.json(estacao);
+  });
+});
+
+router.post("/estacoes",auth, (req, res) => {
   var num = req.body.num;
   var sede = parseInt(req.body.sede);
   var nul = false;
@@ -73,5 +86,7 @@ router.post("/estacoes", (req, res) => {
       });
   }
 });
+
+
 
 module.exports = router;

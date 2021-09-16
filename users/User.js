@@ -2,6 +2,10 @@ const {Sequelize} = require("sequelize")
 const connection = require("../database/database")
 
 const User = connection.define('users', {
+    name:{
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     email:{
         type: Sequelize.STRING,
         allowNull: false
@@ -9,13 +13,11 @@ const User = connection.define('users', {
     password:{
         type: Sequelize.STRING,
         allowNull: false
-    },
-    admin:{
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: 0
     }
 })
+
+
+
 
 
 User.sync({force: false})

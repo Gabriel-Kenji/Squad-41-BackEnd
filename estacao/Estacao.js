@@ -14,4 +14,21 @@ Estacao.belongsTo(Sede)//Um Estacao pertence a uma Sede
 
 Estacao.sync({force: false})
 
+
+// for(i= 1; i <= 240; i++) 
+// {
+//     Estacao.create({
+//         number: i,
+//         sedeId: 1,
+//       })
+// }
+// for(i= 1; i <= 40; i++) 
+// {
+//     Estacao.create({
+//         number: i,
+//         sedeId: 2,
+//       })
+// }
+
+
 module.exports = Estacao 
