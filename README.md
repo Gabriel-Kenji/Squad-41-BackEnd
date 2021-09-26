@@ -10,9 +10,7 @@ A aplicação trata-se de um sistema de agendamento de uso dos espaços dos escr
 * [Node.js](https://nodejs.org/)
 * [Git](https://git-scm.com/)
 * [Myql](https://www.mysql.com/) Server
-* [FrontEnd](https://github.com/Gabriel-Kenji/Squad-41-FrotEnd) da aplicação <!--(opcional)     
-
-A aplicação pode ser usado apartir de Plataformas de uso de API como [Postman](https://www.postman.com/) ou [Insomnia](https://insomnia.rest/)-->
+* [FrontEnd](https://github.com/Gabriel-Kenji/Squad-41-FrotEnd) da aplicação <!-- (opcional)    A aplicação pode ser usado apartir de Plataformas de uso de API como [Postman](https://www.postman.com/) ou [Insomnia](https://insomnia.rest/) -->
 
  
 ## Instalação
