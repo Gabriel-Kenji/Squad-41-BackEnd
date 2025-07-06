@@ -34,8 +34,9 @@ connection
         console.log(error)
     })
 
+// Define a porta a partir da variável de ambiente ou usa 3000 como padrão.
+const PORT = process.env.PORT || 3000;
 
-
-app.listen(50000,()=>{
-    console.log("Iniciado com sucesso")   
+app.listen(PORT, () => {
+    console.log(`Servidor iniciado com sucesso na porta ${PORT}`);
 })

@@ -1,0 +1,5 @@
+# Ignora dependências locais
+node_modules
+
+# Ignora arquivos de build locais
+dist

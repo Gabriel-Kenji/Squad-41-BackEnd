@@ -1,0 +1,41 @@
+# Define os serviços (contêineres) que compõem a aplicação
+services:
+  # Serviço da nossa API Node.js
+  api:
+    # Constrói a imagem a partir do Dockerfile na pasta atual (.)
+    build: .
+    container_name: squad41-api
+    # Reinicia o contêiner automaticamente em caso de falha
+    restart: always
+    # Mapeia a porta 3000 do host para a porta 3000 do contêiner
+    ports:
+      - "3000:3000"
+    # Define as variáveis de ambiente para a API se conectar ao banco
+    environment:
+      - DB_HOST=db         # O nome do serviço do banco de dados
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=squad41_db
+      - PORT=3000
+    # Garante que o serviço 'db' inicie antes do serviço 'api'
+    depends_on:
+      - db
+
+  # Serviço do Banco de Dados MySQL
+  db:
+    image: mysql:5.7
+    container_name: squad41-db
+    restart: always
+    # Define as credenciais para o banco de dados ser criado
+    environment:
+      - MYSQL_DATABASE=squad41_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    # Mapeia um volume para persistir os dados do banco
+    volumes:
+      - db-data:/var/lib/mysql
+
+# Define os volumes nomeados para persistência de dados
+volumes:
+  db-data:

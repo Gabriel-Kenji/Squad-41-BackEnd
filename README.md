@@ -1,47 +1,78 @@
-## Squad-41-BackEnd
+# FCalendar - API de Agendamento de Estações de Trabalho
 
-Aplicação node.js desevolvida para o programa de formação 2021: Season 2 [(Grupo FCamara)](https://fcamara.com.br/)
-## Oque é a aplicação?
+Esta é a API backend para o sistema FCalendar, uma plataforma de agendamento de estações de trabalho em escritórios. Construída com Node.js e Express, e totalmente containerizada com Docker para facilitar a configuração e a execução do ambiente.
 
-A aplicação trata-se de um sistema de agendamento de uso dos espaços dos escritorios do Grupo FCamara
+## ✨ Funcionalidades
 
-## Requisitos
+- **Autenticação de Usuários:** Sistema seguro de login utilizando JSON Web Tokens (JWT).
+- **Gerenciamento de Usuários:** Criação, listagem, atualização e exclusão de usuários.
+- **Gestão de Agendamentos:** Criação, listagem (por usuário) e exclusão de agendamentos.
+- **Consulta de Disponibilidade:** Verificação de estações de trabalho livres por sede e por data.
+- **Notificação por E-mail:** Envio de e-mail de confirmação ao realizar um agendamento.
 
-* [Node.js](https://nodejs.org/)
-* [Git](https://git-scm.com/)
-* [Myql](https://www.mysql.com/) Server
-* [FrontEnd](https://github.com/Gabriel-Kenji/Squad-41-FrotEnd) da aplicação <!-- (opcional)    A aplicação pode ser usado apartir de Plataformas de uso de API como [Postman](https://www.postman.com/) ou [Insomnia](https://insomnia.rest/) -->
+## 🚀 Tecnologias Utilizadas
 
- 
-## Instalação
+- **Backend:** Node.js, Express.js
+- **Banco de Dados:** MySQL com Sequelize (ORM)
+- **Autenticação:** JSON Web Token (JWT), bcryptjs
+- **Containerização:** Docker, Docker Compose
+- **E-mail:** Nodemailer
 
-Clonando o repositorio e instalando ..
+## 📋 Pré-requisitos
 
-```bash
-git clone https://github.com/Gabriel-Kenji/Squad-41-BackEnd.git
-cd Squad-41-BackEnd
-```
+Para executar este projeto, você precisará ter instalado em sua máquina:
 
-```bash
-npm install
-```
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/) (geralmente já vem incluído na instalação do Docker Desktop)
 
-## Configuração
+## ⚙️ Como Rodar o Projeto
 
-### Banco de Dados
+Graças ao Docker, não é necessário instalar Node.js ou MySQL diretamente na sua máquina. Siga os passos abaixo:
 
-Após instalar o [Myql](https://www.mysql.com/) Server, crie um novo banco de dados com o nome fcalendar.
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/seu-usuario/Squad-41-BackEnd.git
+    ```
 
-#### Populando o Banco
+2.  **Navegue até a pasta do projeto:**
+    ```bash
+    cd Squad-41-BackEnd
+    ```
 
-Para polular o banco com alguns dados bases necessarios para o projeto é necessario ir nos arquivos estacao/estaco.js e sedes/sede.js e descomentar as ultimas linhas, apos a primeira execução do programa é recomendado comentar as linhas novamente para que os dados não se dupliquem no banco de dados.
+3.  **Inicie os contêineres:**
+    Execute o seguinte comando para construir a imagem da API e iniciar os serviços da aplicação e do banco de dados.
+    ```bash
+    docker-compose up --build -d
+    ```
+    - O comando `up` inicia os contêineres.
+    - A flag `--build` garante que a imagem da API seja reconstruída com as últimas alterações do código.
+    - A flag `-d` executa os contêineres em segundo plano (modo "detached").
 
-## Execução
+Pronto! A API estará rodando e acessível em `http://localhost:3000`.
 
-Para executar o projeto é necessario executar o seguinte comando em um terminal/cmd que estaja localizado na pasta do projeto 
+## Endpoints da API
 
-```bash
-npm start
-```
+A seguir estão as principais rotas disponíveis na API. Rotas marcadas com 🔒 requerem um token de autenticação no cabeçalho (`Authorization: Bearer <token>`).
 
-Após isso é so intalar e seguir as intruçoes  do [FrontEnd](https://github.com/Gabriel-Kenji/Squad-41-FrotEnd) do projeto
+| Método | Rota                          | Descrição                                                    | Autenticação |
+| :----- | :---------------------------- | :----------------------------------------------------------- | :----------: |
+| `POST` | `/users`                      | Cria um novo usuário.                                        |      Não     |
+| `POST` | `/login`                      | Autentica um usuário e retorna um token JWT.                 |      Não     |
+| `GET`  | `/users`                      | 🔒 Lista todos os usuários.                                  |     Sim      |
+| `GET`  | `/sedes`                      | 🔒 Lista todas as sedes disponíveis.                         |     Sim      |
+| `GET`  | `/agendamentos/:date/:sede`   | 🔒 Lista agendamentos e estações livres para uma data e sede. |     Sim      |
+| `GET`  | `/agendamentos/:id`           | 🔒 Lista todos os agendamentos de um usuário específico.     |     Sim      |
+| `POST` | `/agendamentos`               | 🔒 Cria um novo agendamento para o usuário.                  |     Sim      |
+| `DELETE`| `/agendamento/:id`            | 🔒 Deleta um agendamento específico.                         |     Sim      |
+
+## 🖥️ Aplicação Front-end
+
+Este repositório contém apenas a API (backend) do projeto. Para uma experiência de usuário completa, você precisará da aplicação front-end que consome os dados desta API.
+
+- **Repositório do Front-end:** [Squad-41-FrontEnd](https://github.com/Gabriel-Kenji/Squad-41-FrotEnd)
+
+Após iniciar a API com o Docker Compose, siga as instruções no `README.md` do repositório do front-end para configurá-lo e conectá-lo a este backend.
+
+## 📄 Licença
+
+Este projeto está sob a licença ISC.
